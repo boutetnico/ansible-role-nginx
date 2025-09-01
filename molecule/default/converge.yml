@@ -27,15 +27,19 @@
           dest: example.conf
 
       # Auth
-      nginx_auth:
+      nginx_auth_users:
+        - name: user1
+          password: "$apr1$abcd1234$N6Hh8GmVtI8p5m2xPRw9o/"
+        - name: admin
+          password: "$2y$12$B9mQXGvQe0tqJx...rest_of_bcrypt_hash..."
+      nginx_auth_groups:
         - name: users
-          entries:
-            - user: user1
-              hash: "$apr1$abcd1234$N6Hh8GmVtI8p5m2xPRw9o/"
+          users:
+            - user1
         - name: admins
-          entries:
-            - user: admin
-              hash: "$2y$12$B9mQXGvQe0tqJx...rest_of_bcrypt_hash..."
+          users:
+            - admin
+            - user1
 
       # Extra conf settings
       nginx_extra_conf_root:

@@ -23,6 +23,17 @@
     - /etc/nginx/sites-available/default
   notify: Reload nginx
 
+- name: Validate auth groups users exist
+  ansible.builtin.assert:
+    fail_msg: "Unknown users in auth groups: {{ missing | join(', ') }}"
+    that:
+      - missing | length == 0
+  vars:
+    declared: "{{ nginx_auth_users | map(attribute='name') | list }}"
+    referenced: "{{ nginx_auth_groups | map(attribute='users') | flatten | unique }}"
+    missing: "{{ referenced | difference(declared) }}"
+  when: nginx_auth_groups | length > 0
+
 - name: Install htpasswd files for each group of users
   ansible.builtin.template:
     dest: "/etc/nginx/htpasswd.{{ item.name }}"
@@ -30,7 +41,7 @@
     mode: "0600"
     owner: "{{ nginx_user }}"
     src: etc/nginx/htpasswd.j2
-  loop: "{{ nginx_auth }}"
+  loop: "{{ nginx_auth_groups }}"
   loop_control:
     label: "{{ item.name }}"
   notify: Reload nginx

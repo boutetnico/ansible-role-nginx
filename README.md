@@ -64,7 +64,7 @@ Role Variables
 | `nginx_http_limit_whitelist_headers` | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
 | `nginx_http_limit_zones`             | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
 | `nginx_servers`                      | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
-| `nginx_auth`                         | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
+| `nginx_auth_groups`                  | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
 | `nginx_extra_conf_root`              | true     | `{}`                          | dict        | Extra root-level directives         |
 | `nginx_extra_conf_http`              | true     | `{}`                          | dict        | Extra http-level directives         |
 | `nginx_systemd_override`             | true     | `{}`                          | dict        | See `defaults/main.yml`             |

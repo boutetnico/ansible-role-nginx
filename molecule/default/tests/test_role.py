@@ -54,12 +54,18 @@ def test_hosts_deny(host):
 def test_htpasswd_files(host):
     users = host.file("/etc/nginx/htpasswd.users")
     admins = host.file("/etc/nginx/htpasswd.admins")
+
     assert users.exists and users.is_file and users.user == "www-data"
     assert admins.exists and admins.is_file and admins.user == "www-data"
+
+    # users group: only user1
     assert "user1:$apr1$abcd1234$N6Hh8GmVtI8p5m2xPRw9o/" in users.content_string
+
+    # admins group: admin + user1 (because group includes both)
     assert (
         "admin:$2y$12$B9mQXGvQe0tqJx...rest_of_bcrypt_hash..." in admins.content_string
     )
+    assert "user1:$apr1$abcd1234$N6Hh8GmVtI8p5m2xPRw9o/" in admins.content_string
 
 
 def test_http_limit_zones_conf(host):
