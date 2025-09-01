@@ -1,0 +1,116 @@
+---
+- name: Ensure nginx is installed
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop: "{{ nginx_packages }}"
+
+- name: Ensure conf.d directory exists
+  ansible.builtin.file:
+    group: root
+    mode: "0755"
+    owner: root
+    path: /etc/nginx/conf.d
+    state: directory
+
+- name: Remove default nginx conf
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/sites-available/default
+  notify: Reload nginx
+
+- name: Install htpasswd files for each group of users
+  ansible.builtin.template:
+    dest: "/etc/nginx/htpasswd.{{ item.name }}"
+    group: root
+    mode: "0600"
+    owner: "{{ nginx_user }}"
+    src: etc/nginx/htpasswd.j2
+  loop: "{{ nginx_auth }}"
+  loop_control:
+    label: "{{ item.name }}"
+  notify: Reload nginx
+
+- name: Copy nginx available sites conf files
+  ansible.builtin.template:
+    dest: /etc/nginx/sites-available/{{ item.dest }}
+    group: root
+    mode: "0644"
+    owner: root
+    src: "{{ item.src }}"
+  loop: "{{ nginx_servers }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  notify: Reload nginx
+
+- name: Enable sites
+  ansible.builtin.file:
+    dest: /etc/nginx/sites-enabled/{{ item.dest }}
+    force: true
+    group: root
+    owner: root
+    src: /etc/nginx/sites-available/{{ item.dest }}
+    state: link
+  loop: "{{ nginx_servers }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  notify: Reload nginx
+
+- name: Copy nginx sub-configuration files in place
+  ansible.builtin.template:
+    dest: /etc/nginx/conf.d/{{ item | basename | regex_replace('.j2', '') }}
+    group: root
+    mode: "0644"
+    owner: root
+    src: "{{ item }}"
+  with_fileglob:
+    - ../templates/etc/nginx/conf.d/*.conf.j2
+  notify: Reload nginx
+
+- name: Ensure dhparams exist
+  ansible.builtin.command: "openssl dhparam -out {{ nginx_dhparams_path }} {{ nginx_dhparams_size }}"
+  args:
+    creates: "{{ nginx_dhparams_path }}"
+  notify: Restart nginx
+
+- name: Set permissions of dhparams file
+  ansible.builtin.file:
+    group: root
+    mode: "0600"
+    owner: root
+    path: "{{ nginx_dhparams_path }}"
+    state: file
+  notify: Restart nginx
+
+- name: Ensure hosts.deny file exists
+  ansible.builtin.copy:
+    content: ""
+    dest: "{{ nginx_deny_hosts_file }}"
+    force: false
+    group: root
+    mode: "0644"
+    owner: root
+  notify: Reload nginx
+
+- name: Copy nginx configuration in place
+  ansible.builtin.template:
+    dest: /etc/nginx/nginx.conf
+    group: root
+    mode: "0644"
+    owner: root
+    src: etc/nginx/nginx.conf.j2
+    validate: "/usr/sbin/nginx -t -c %s"
+  notify: Reload nginx
+
+- name: Setup systemd config
+  ansible.builtin.import_tasks: systemd.yml
+
+- name: Ensure nginx is started and starts on boot
+  ansible.builtin.service:
+    enabled: true
+    name: nginx
+    state: started

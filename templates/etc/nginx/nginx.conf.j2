@@ -1,0 +1,72 @@
+user {{ nginx_user }};
+worker_processes {{ nginx_worker_processes }};
+pid {{ nginx_pidfile }};
+include /etc/nginx/modules-enabled/*.conf;
+
+{% for k, v in nginx_extra_conf_root | dictsort %}
+{%   if v is iterable and v is not string %}
+{%     for vv in v %}
+{{ k }} {{ vv }};
+{%     endfor %}
+{%   else %}
+{{ k }} {{ v }};
+{%   endif %}
+{% endfor %}
+
+events {
+    worker_connections {{ nginx_worker_connections }};
+    multi_accept {{ nginx_multi_accept | ternary('on','off') }};
+}
+
+http {
+    sendfile {{ nginx_sendfile | ternary('on','off') }};
+    tcp_nopush {{ nginx_tcp_nopush | ternary('on','off') }};
+    tcp_nodelay {{ nginx_tcp_nodelay | ternary('on','off') }};
+    keepalive_timeout {{ nginx_keepalive_timeout }};
+    keepalive_requests {{ nginx_keepalive_requests }};
+    types_hash_max_size {{ nginx_types_hash_max_size }};
+    server_tokens {{ nginx_server_tokens | ternary('on','off') }};
+
+    server_names_hash_bucket_size {{ nginx_server_names_hash_bucket_size }};
+    server_names_hash_max_size {{ nginx_server_names_hash_max_size }};
+    server_name_in_redirect {{ nginx_server_name_in_redirect | ternary('on','off') }};
+
+    include {{ nginx_mime_file_path }};
+    default_type {{ nginx_default_type }};
+
+    ssl_protocols {{ nginx_ssl_protocols }};
+    ssl_prefer_server_ciphers {{ nginx_ssl_prefer_server_ciphers | ternary('on','off') }};
+    ssl_ciphers {{ nginx_ssl_ciphers }};
+
+    access_log {{ nginx_access_log }};
+    error_log {{ nginx_error_log }} warn;
+
+    gzip {{ nginx_gzip | ternary('on','off') }};
+    gzip_http_version {{ nginx_gzip_http_version }};
+    gzip_vary {{ nginx_gzip_vary | ternary('on','off') }};
+    gzip_comp_level {{ nginx_gzip_comp_level }};
+    gzip_proxied {{ nginx_gzip_proxied }};
+    gzip_types {{ nginx_gzip_types }};
+    gzip_buffers {{ nginx_gzip_buffers }};
+
+    ssl_dhparam {{ nginx_dhparams_path }};
+
+    client_max_body_size {{ nginx_client_max_body_size }};
+    client_body_buffer_size {{ nginx_client_body_buffer_size }};
+    large_client_header_buffers {{ nginx_large_client_header_buffers }};
+
+    include {{ nginx_deny_hosts_file }};
+
+{% for k, v in nginx_extra_conf_http | dictsort %}
+{%   if v is iterable and v is not string %}
+{%     for vv in v %}
+    {{ k }} {{ vv }};
+{%     endfor %}
+{%   else %}
+    {{ k }} {{ v }};
+{%   endif %}
+{% endfor %}
+
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-enabled/*;
+}

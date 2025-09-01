@@ -1,0 +1,107 @@
+---
+# Packages
+nginx_packages:
+  - nginx-core
+  # - nginx-full
+  # - nginx-extras
+
+# User
+nginx_user: www-data
+
+# Paths
+nginx_mime_file_path: /etc/nginx/mime.types
+nginx_pidfile: /run/nginx.pid
+
+# Logging
+nginx_access_log: /var/log/nginx/access.log
+nginx_error_log: /var/log/nginx/error.log
+
+# Events
+nginx_multi_accept: false
+nginx_worker_connections: 512
+nginx_worker_processes: auto
+
+# HTTP core
+nginx_default_type: application/octet-stream
+nginx_keepalive_requests: 1000
+nginx_keepalive_timeout: "75s"
+nginx_sendfile: true
+nginx_server_name_in_redirect: false
+nginx_server_names_hash_bucket_size: 64
+nginx_server_names_hash_max_size: 512
+nginx_server_tokens: false
+nginx_tcp_nodelay: true
+nginx_tcp_nopush: true
+nginx_types_hash_max_size: 2048
+
+# Compression
+nginx_gzip: true
+nginx_gzip_buffers: "16 8k"
+nginx_gzip_comp_level: 3
+nginx_gzip_http_version: "1.1"
+nginx_gzip_proxied: "off"
+nginx_gzip_types: "text/css text/javascript text/xml text/plain text/x-component
+  application/javascript application/x-javascript application/json application/xml
+  application/rss+xml font/truetype application/x-font-ttf font/opentype
+  application/vnd.ms-fontobject image/svg+xml"
+nginx_gzip_vary: false
+
+# TLS
+nginx_dhparams_path: /etc/nginx/dhparams.pem
+nginx_dhparams_size: 2048
+nginx_ssl_ciphers: "HIGH:!aNULL:!MD5"
+nginx_ssl_prefer_server_ciphers: false
+nginx_ssl_protocols: TLSv1.2 TLSv1.3
+
+# Client limits
+nginx_client_body_buffer_size: 16k
+nginx_client_max_body_size: 10m
+nginx_large_client_header_buffers: "4 8k"
+
+# Include files (managed)
+nginx_deny_hosts_file: /etc/nginx/hosts.deny
+
+# Limits
+nginx_http_limit_whitelist_cidrs: []
+  # - 192.168.0.0/16
+  # - 10.0.0.0/8
+nginx_http_limit_whitelist_headers: []
+  # - name: X-Rate-Limit-Bypass
+  #   values:
+  #     - secret-value
+  #     - another-secret-value
+nginx_http_limit_zones: []
+  # - name: api_zone
+  #   size: 10m
+  #   rate: 5r/s
+  #   burst: 10
+  #   nodelay: true
+
+# Servers
+nginx_servers: []
+  # - src: etc/nginx/sites/example.conf.j2
+  #   dest: example.conf
+
+# Auth
+nginx_auth: []
+  # - name: users
+  #   entries:
+  #     - user: user1
+  #       hash: "$apr1$abcd1234$N6Hh8GmVtI8p5m2xPRw9o/"
+  # - name: admins
+  #   entries:
+  #     - user: admin
+  #       hash: "$2y$12$B9mQXGvQe0tqJx...rest_of_bcrypt_hash..."
+
+# Extra conf settings
+nginx_extra_conf_root: {}
+  # worker_rlimit_nofile: 10000
+  # load_module: "modules/ngx_http_geoip_module.so"
+nginx_extra_conf_http: {}
+  # ssl_session_cache: "shared:SSL:10m"
+  # ssl_session_timeout: "10m"
+
+# Systemd
+nginx_systemd_override: {}
+  # Service:
+  #   LimitNOFILE: 10000

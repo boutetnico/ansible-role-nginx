@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+{% for section, options in nginx_systemd_override | dictsort %}
+[{{ section }}]
+{%   for key, value in options | dictsort %}
+{{ key }}={{ value }}
+{%   endfor %}
+
+{% endfor %}

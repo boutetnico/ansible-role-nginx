@@ -1,0 +1,19 @@
+---
+- name: Ensure systemd nginx directory exists
+  ansible.builtin.file:
+    group: root
+    mode: "0755"
+    owner: root
+    path: /etc/systemd/system/nginx.service.d
+    state: directory
+
+- name: Ensure override.conf is installed
+  ansible.builtin.template:
+    dest: /etc/systemd/system/nginx.service.d/override.conf
+    group: root
+    mode: "0644"
+    owner: root
+    src: etc/systemd/system/override.conf.j2
+  notify:
+    - Reload systemd daemon
+    - Restart nginx

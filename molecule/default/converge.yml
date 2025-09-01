@@ -1,0 +1,50 @@
+---
+- name: Converge
+  hosts: all
+
+  roles:
+    - role: boutetnico.nginx
+
+      nginx_http_limit_whitelist_cidrs:
+        - 192.168.0.0/16
+        - 10.0.0.0/8
+
+      nginx_http_limit_whitelist_headers:
+        - name: X-Rate-Limit-Bypass
+          values:
+            - secret-value
+            - another-secret-value
+      nginx_http_limit_zones:
+        - name: api_zone
+          size: 10m
+          rate: 5r/s
+          burst: 10
+          nodelay: true
+
+      # Servers
+      nginx_servers:
+        - src: templates/example.conf.j2
+          dest: example.conf
+
+      # Auth
+      nginx_auth:
+        - name: users
+          entries:
+            - user: user1
+              hash: "$apr1$abcd1234$N6Hh8GmVtI8p5m2xPRw9o/"
+        - name: admins
+          entries:
+            - user: admin
+              hash: "$2y$12$B9mQXGvQe0tqJx...rest_of_bcrypt_hash..."
+
+      # Extra conf settings
+      nginx_extra_conf_root:
+        worker_rlimit_nofile: 10000
+      nginx_extra_conf_http:
+        ssl_session_cache: "shared:SSL:10m"
+        ssl_session_timeout: "10m"
+
+      # Systemd
+      nginx_systemd_override:
+        Service:
+          LimitNOFILE: 10000

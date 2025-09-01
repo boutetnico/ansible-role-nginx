@@ -1,0 +1,31 @@
+# {{ ansible_managed }}
+
+geo $limit_ip {
+  default 1;
+{% for ip in nginx_http_limit_whitelist_cidrs %}
+  {{ ip }} 0;
+{% endfor %}
+}
+
+{% set prev = '$binary_remote_addr' %}
+{% for header in nginx_http_limit_whitelist_headers %}
+map $http_{{ header.name | lower | replace('-', '_') }} $limit_hdr_{{ loop.index }} {
+  default {{ prev }};
+{%   for value in header.get('values', []) %}
+  {{ value }} "";
+{%   endfor %}
+}
+{%   set prev = '$limit_hdr_' ~ loop.index %}
+{% endfor %}
+
+map $limit_ip $limit_key {
+  0 "";
+  1 {{ prev }};
+}
+
+{% for z in nginx_http_limit_zones %}
+limit_req_zone $limit_key zone={{ z.name }}:{{ z.size }}{% if z.rate is defined and z.rate %} rate={{ z.rate }}{% endif %};
+{%   if z.burst is defined or (z.nodelay is defined and z.nodelay) %}
+limit_req zone={{ z.name }}{% if z.burst is defined %} burst={{ z.burst }}{% endif %}{% if z.nodelay is defined and z.nodelay %} nodelay{% endif %};
+{%   endif %}
+{% endfor %}
