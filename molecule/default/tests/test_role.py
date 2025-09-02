@@ -78,14 +78,14 @@ def test_http_limit_zones_conf(host):
         re.S,
     )
     assert re.search(
-        r"map \$http_x_rate_limit_bypass \$limit_hdr_1\s*{\s*default \$binary_remote_addr;",
+        r"map \$http_x_rate_limit_bypass \$limit_header\s*{\s*default \$binary_remote_addr;",
         c,
         re.S,
     )
     assert re.search(r'\n\s*secret-value\s*"";\n', c)
     assert re.search(r'\n\s*another-secret-value\s*"";\n', c)
+    assert re.search(r"map \$limit_ip \$limit_key\s*{\s*0 \"\";\s*1 \$limit_header;\s*}", c, re.S)
     assert re.search(r"limit_req_zone \$limit_key zone=api_zone:10m rate=5r/s;", c)
-    assert "burst=10" in c and "nodelay" in c
 
 
 def test_extra_conf_rendered(host):

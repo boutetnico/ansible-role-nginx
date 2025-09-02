@@ -7,25 +7,23 @@ geo $limit_ip {
 {% endfor %}
 }
 
-{% set prev = '$binary_remote_addr' %}
+{% set ns = namespace(prev='$binary_remote_addr') %}
 {% for header in nginx_http_limit_whitelist_headers %}
-map $http_{{ header.name | lower | replace('-', '_') }} $limit_hdr_{{ loop.index }} {
-  default {{ prev }};
-{%   for value in header.get('values', []) %}
+{%   set map_var = 'limit_header' if (nginx_http_limit_whitelist_headers | length) == 1 else 'limit_hdr_' ~ loop.index %}
+map $http_{{ header.name | lower | replace('-', '_') }} ${{ map_var }} {
+  default {{ ns.prev }};
+{%   for value in (header['values'] | default([])) %}
   {{ value }} "";
 {%   endfor %}
 }
-{%   set prev = '$limit_hdr_' ~ loop.index %}
+{%   set ns.prev = '$' ~ map_var %}
 {% endfor %}
 
 map $limit_ip $limit_key {
   0 "";
-  1 {{ prev }};
+  1 {{ ns.prev }};
 }
 
 {% for z in nginx_http_limit_zones %}
-limit_req_zone $limit_key zone={{ z.name }}:{{ z.size }}{% if z.rate is defined and z.rate %} rate={{ z.rate }}{% endif %};
-{%   if z.burst is defined or (z.nodelay is defined and z.nodelay) %}
-limit_req zone={{ z.name }}{% if z.burst is defined %} burst={{ z.burst }}{% endif %}{% if z.nodelay is defined and z.nodelay %} nodelay{% endif %};
-{%   endif %}
+limit_req_zone $limit_key zone={{ z.name }}:{{ z.size }} rate={{ z.rate }};
 {% endfor %}
