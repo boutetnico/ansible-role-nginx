@@ -84,7 +84,9 @@ def test_http_limit_zones_conf(host):
     )
     assert re.search(r'\n\s*secret-value\s*"";\n', c)
     assert re.search(r'\n\s*another-secret-value\s*"";\n', c)
-    assert re.search(r"map \$limit_ip \$limit_key\s*{\s*0 \"\";\s*1 \$limit_header;\s*}", c, re.S)
+    assert re.search(
+        r"map \$limit_ip \$limit_key\s*{\s*0 \"\";\s*1 \$limit_header;\s*}", c, re.S
+    )
     assert re.search(r"limit_req_zone \$limit_key zone=api_zone:10m rate=5r/s;", c)
 
 
