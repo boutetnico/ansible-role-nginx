@@ -83,12 +83,12 @@ nginx_servers: []
   #   dest: example.conf
 
 # Auth
-nginx_auth_users:
+nginx_auth_users: []
   #   - name: user1
   #     password: "$apr1$abcd1234$..."
   #   - name: admin
   #     password: "$2y$12$..."
-nginx_auth_groups:
+nginx_auth_groups: []
   # - name: admins
   #   users:
   #     - admin
