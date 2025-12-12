@@ -62,50 +62,63 @@ nginx_large_client_header_buffers: "4 8k"
 nginx_deny_hosts_file: /etc/nginx/hosts.deny
 
 # Limits
+# nginx_http_limit_whitelist_cidrs:
+#   - 192.168.0.0/16
+#   - 10.0.0.0/8
 nginx_http_limit_whitelist_cidrs: []
-  # - 192.168.0.0/16
-  # - 10.0.0.0/8
+
+# nginx_http_limit_whitelist_headers:
+#   - name: X-Rate-Limit-Bypass
+#     values:
+#       - secret-value
+#       - another-secret-value
 nginx_http_limit_whitelist_headers: []
-  # - name: X-Rate-Limit-Bypass
-  #   values:
-  #     - secret-value
-  #     - another-secret-value
+
+# nginx_http_limit_zones:
+#   - name: api_zone
+#     size: 10m
+#     rate: 5r/s
+#     burst: 10
+#     nodelay: true
 nginx_http_limit_zones: []
-  # - name: api_zone
-  #   size: 10m
-  #   rate: 5r/s
-  #   burst: 10
-  #   nodelay: true
 
 # Servers
+# nginx_servers:
+#   - src: etc/nginx/sites/example.conf.j2
+#     dest: example.conf
 nginx_servers: []
-  # - src: etc/nginx/sites/example.conf.j2
-  #   dest: example.conf
 
 # Auth
+# nginx_auth_users:
+#   - name: user1
+#     password: "$apr1$abcd1234$..."
+#   - name: admin
+#     password: "$2y$12$..."
 nginx_auth_users: []
-  #   - name: user1
-  #     password: "$apr1$abcd1234$..."
-  #   - name: admin
-  #     password: "$2y$12$..."
+
+# nginx_auth_groups:
+#   - name: admins
+#     users:
+#       - admin
+#   - name: developers
+#     users:
+#       - admin
+#       - user1
 nginx_auth_groups: []
-  # - name: admins
-  #   users:
-  #     - admin
-  # - name: developers
-  #   users:
-  #     - admin
-  #     - user1
 
 # Extra conf settings
+# nginx_extra_conf_root:
+#   worker_rlimit_nofile: 10000
+#   load_module: "modules/ngx_http_geoip_module.so"
 nginx_extra_conf_root: {}
-  # worker_rlimit_nofile: 10000
-  # load_module: "modules/ngx_http_geoip_module.so"
+
+# nginx_extra_conf_http:
+#   ssl_session_cache: "shared:SSL:10m"
+#   ssl_session_timeout: "10m"
 nginx_extra_conf_http: {}
-  # ssl_session_cache: "shared:SSL:10m"
-  # ssl_session_timeout: "10m"
 
 # Systemd
+# nginx_systemd_override:
+#   Service:
+#     LimitNOFILE: 10000
 nginx_systemd_override: {}
-  # Service:
-  #   LimitNOFILE: 10000
