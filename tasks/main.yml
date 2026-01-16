@@ -78,8 +78,7 @@
     mode: "0644"
     owner: root
     src: "{{ item }}"
-  with_fileglob:
-    - ../templates/etc/nginx/conf.d/*.conf.j2
+  loop: "{{ query('fileglob', '../templates/etc/nginx/conf.d/*.conf.j2') }}"
   notify: Reload nginx
 
 - name: Ensure dhparams exist
