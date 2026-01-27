@@ -45,6 +45,7 @@
   loop_control:
     label: "{{ item.name }}"
   notify: Reload nginx
+  no_log: true
 
 - name: Copy nginx available sites conf files
   ansible.builtin.template:
