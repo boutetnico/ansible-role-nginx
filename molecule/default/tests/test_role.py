@@ -8,10 +8,20 @@ def test_package_installed(host):
     assert host.package(PKG).is_installed
 
 
+def test_nginx_command_works(host):
+    cmd = host.run("nginx -v")
+    assert cmd.rc == 0
+
+
 def test_service_enabled_running(host):
     s = host.service(SERVICE)
     assert s.is_enabled
     assert s.is_running
+
+
+def test_nginx_is_listening_on_port_80(host):
+    socket = host.socket("tcp://0.0.0.0:80")
+    assert socket.is_listening
 
 
 def test_dirs(host):
