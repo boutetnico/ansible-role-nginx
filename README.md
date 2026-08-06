@@ -30,6 +30,7 @@ Role Variables
 | `nginx_pidfile`                      | true     | `"/run/nginx.pid"`            | string      | PID file                            |
 | `nginx_access_log`                   | true     | `"/var/log/nginx/access.log"` | string      | Access log path                     |
 | `nginx_error_log`                    | true     | `"/var/log/nginx/error.log"`  | string      | Error log path                      |
+| `nginx_log_formats`                  | true     | `{}`                          | dict        | Named http-level log_format blocks  |
 | `nginx_multi_accept`                 | true     | `false`                       | bool        |                                     |
 | `nginx_worker_connections`           | true     | `512`                         | int         |                                     |
 | `nginx_worker_processes`             | true     | `"auto"`                      | string/int  | Master process count                |

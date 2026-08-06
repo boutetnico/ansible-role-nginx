@@ -16,6 +16,15 @@ nginx_pidfile: /run/nginx.pid
 nginx_access_log: /var/log/nginx/access.log
 nginx_error_log: /var/log/nginx/error.log
 
+# Named log formats, defined in the http {} context so server/location
+# blocks can reference them via `access_log <path> <name>;`. Each value is
+# the full format body (everything after the name).
+# nginx_log_formats:
+#   timed: "'$remote_addr - $remote_user [$time_local] \"$request\" $status
+#     $body_bytes_sent \"$http_referer\" \"$http_user_agent\"
+#     rt=$request_time urt=$upstream_response_time'"
+nginx_log_formats: {}
+
 # Events
 nginx_multi_accept: false
 nginx_worker_connections: 512

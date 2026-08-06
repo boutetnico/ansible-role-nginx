@@ -41,6 +41,11 @@
             - admin
             - user1
 
+      # Named log formats
+      nginx_log_formats:
+        timed: "'$remote_addr [$time_local] \"$request\" $status
+          rt=$request_time urt=$upstream_response_time'"
+
       # Extra conf settings
       nginx_extra_conf_root:
         worker_rlimit_nofile: 10000

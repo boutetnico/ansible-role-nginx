@@ -40,6 +40,9 @@ http {
     ssl_prefer_server_ciphers {{ nginx_ssl_prefer_server_ciphers | ternary('on','off') }};
     ssl_ciphers {{ nginx_ssl_ciphers }};
 
+{% for name, fmt in nginx_log_formats | dictsort %}
+    log_format {{ name }} {{ fmt }};
+{% endfor %}
     access_log {{ nginx_access_log }};
     error_log {{ nginx_error_log }} warn;
 
