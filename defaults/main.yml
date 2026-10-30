@@ -97,6 +97,13 @@ nginx_http_limit_zones: []
 #     dest: example.conf
 nginx_servers: []
 
+# Written to /etc/nginx/ssl/<name>.crt and <name>.key
+# nginx_ssl_certificates:
+#   - name: example
+#     cert: "-----BEGIN CERTIFICATE-----..."
+#     key: "-----BEGIN PRIVATE KEY-----..."
+nginx_ssl_certificates: []
+
 # Auth
 # nginx_auth_users:
 #   - name: user1

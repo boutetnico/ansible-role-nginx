@@ -26,6 +26,12 @@
         - src: templates/example.conf.j2
           dest: example.conf
 
+      # SSL certificates
+      nginx_ssl_certificates:
+        - name: example
+          cert: "test-certificate"
+          key: "test-key"
+
       # Auth
       nginx_auth_users:
         - name: user1

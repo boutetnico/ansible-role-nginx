@@ -49,6 +49,15 @@ def test_site_installed_and_enabled(host):
     assert enabled.linked_to == "/etc/nginx/sites-available/example.conf"
 
 
+def test_ssl_certificates(host):
+    d = host.file("/etc/nginx/ssl")
+    assert d.is_directory and d.user == "root" and d.mode == 0o700
+    cert = host.file("/etc/nginx/ssl/example.crt")
+    assert cert.content_string == "test-certificate" and cert.mode == 0o644
+    key = host.file("/etc/nginx/ssl/example.key")
+    assert key.content_string == "test-key" and key.mode == 0o600
+
+
 def test_dhparams(host):
     f = host.file("/etc/nginx/dhparams.pem")
     assert f.exists and f.is_file

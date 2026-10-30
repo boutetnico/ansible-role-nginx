@@ -47,6 +47,40 @@
   notify: Reload nginx
   no_log: true
 
+- name: Ensure ssl directory exists
+  ansible.builtin.file:
+    group: root
+    mode: "0700"
+    owner: root
+    path: /etc/nginx/ssl
+    state: directory
+  when: nginx_ssl_certificates | length > 0
+
+- name: Install ssl certificates
+  ansible.builtin.copy:
+    content: "{{ item.cert }}"
+    dest: /etc/nginx/ssl/{{ item.name }}.crt
+    group: root
+    mode: "0644"
+    owner: root
+  loop: "{{ nginx_ssl_certificates }}"
+  loop_control:
+    label: "{{ item.name }}"
+  notify: Reload nginx
+
+- name: Install ssl certificate keys
+  ansible.builtin.copy:
+    content: "{{ item.key }}"
+    dest: /etc/nginx/ssl/{{ item.name }}.key
+    group: root
+    mode: "0600"
+    owner: root
+  loop: "{{ nginx_ssl_certificates }}"
+  loop_control:
+    label: "{{ item.name }}"
+  notify: Reload nginx
+  no_log: true
+
 - name: Copy nginx available sites conf files
   ansible.builtin.template:
     dest: /etc/nginx/sites-available/{{ item.dest }}
