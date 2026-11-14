@@ -65,6 +65,7 @@ Role Variables
 | `nginx_http_limit_whitelist_headers` | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
 | `nginx_http_limit_zones`             | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
 | `nginx_servers`                      | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
+| `nginx_static_extensions`            | true     | see `defaults/main.yml`       | list(str)   | Regex alternatives for static files |
 | `nginx_ssl_certificates`             | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
 | `nginx_auth_groups`                  | true     | `[]`                          | list(dict)  | See `defaults/main.yml`             |
 | `nginx_extra_conf_root`              | true     | `{}`                          | dict        | Extra root-level directives         |
