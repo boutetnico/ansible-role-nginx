@@ -25,6 +25,7 @@ Role Variables
 | Variable                             | Required | Default                       | Choices     | Comments                            |
 |--------------------------------------|----------|-------------------------------|-------------|-------------------------------------|
 | `nginx_packages`                     | true     | `["nginx-core"]`              | list(str)   | Packages to install                 |
+| `nginx_packages_state`               | true     | `present`                     | string      | Use `latest` to upgrade packages    |
 | `nginx_user`                         | true     | `"www-data"`                  | string      | Nginx user                          |
 | `nginx_mime_file_path`               | true     | `"/etc/nginx/mime.types"`     | string      | MIME types file                     |
 | `nginx_pidfile`                      | true     | `"/run/nginx.pid"`            | string      | PID file                            |

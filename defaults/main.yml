@@ -4,6 +4,7 @@ nginx_packages:
   - nginx-core
   # - nginx-full
   # - nginx-extras
+nginx_packages_state: present
 
 # User
 nginx_user: www-data
