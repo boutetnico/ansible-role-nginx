@@ -130,7 +130,10 @@ def test_log_formats_rendered(host):
 
 def test_static_extensions_rendered(host):
     site = host.file("/etc/nginx/sites-available/example.conf").content_string
-    assert "location ~* \\.(?:css|js|svg|png|jpe?g|gif|ico|webp|avif|woff2?|ttf|eot|map)$" in site
+    assert (
+        "location ~* \\.(?:css|js|svg|png|jpe?g|gif|ico|webp|avif|woff2?|ttf|eot|map)$"
+        in site
+    )
 
 
 def test_tls_core_settings(host):
